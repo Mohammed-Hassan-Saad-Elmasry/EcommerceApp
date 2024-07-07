@@ -8,7 +8,7 @@ import orderRouter from "./src/modules/order/order.router.js";
 import productRouter from "./src/modules/product/product.router.js";
 import reviewsRouter from "./src/modules/reviews/review.router.js";
 import { handelerror , asyncHandler } from "./src/utils/errorhandling.js";
- import subcategoryRouter from "./modules/subcategory/subcategory.router.js";
+ import subcategoryRouter from "./src/modules/subcategory/subcategory.router.js";
 import userRouter from "./src/modules/user/user.router.js";
 import cors from "cors";
 const bootstrap = (app, express) => {
