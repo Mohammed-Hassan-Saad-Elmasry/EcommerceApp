@@ -1,7 +1,8 @@
 import * as orderController from "./controller/order.js";
 import { endpoint } from "./order.endPoint.js";
 import { auth } from "../../middleware/auth.js";
-import { Router } from "express";
+import { Router } from "express"; 
+import express from "express"; 
 const router = Router();
 
 router.post("/", auth(endpoint.create), orderController.createOrder);
@@ -18,10 +19,6 @@ router.patch(
   orderController.updateOrderStatusByAdmin
 );
 
-// router.post(
-//   "/webhook",
-//   express.raw({ type: "application/json" }),
-//   orderController.webhook
-// );
+router.post('/webhook', express.raw({type: 'application/json'}), orderController.webhook);
 
 export default router;

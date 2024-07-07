@@ -13,7 +13,14 @@ import userRouter from "./src/modules/user/user.router.js";
 import cors from "cors";
 const bootstrap = (app, express) => {
   app.use(cors()); // allow access from anyWare
-  app.use(express.json());
+  app.use((req,res,next)=>{
+    if(req.originalUrl == '/order/webhook'){
+      next()
+    }
+    else {
+      express.json({})(req,res,next)
+    }
+  })
   app.get("/", (req, res, next) => {
     return res
       .status(200)

@@ -133,10 +133,13 @@ export const createOrder = asyncHandler(async (req, res, next) => {
 
   if (order.paymentType == "card") {
     const stripe = new Stripe(process.env.STRIPE_KEY);
-    if(req.body.coupon){
-      const coupon = await stripe.coupons.create({percent_off:req.body.coupon.amount , duration:'once'})
+    if (req.body.coupon) {
+      const coupon = await stripe.coupons.create({
+        percent_off: req.body.coupon.amount,
+        duration: "once",
+      });
       console.log(coupon);
-      req.body.couponId = coupon.id
+      req.body.couponId = coupon.id;
     }
     const session = await payment({
       stripe,
@@ -146,7 +149,7 @@ export const createOrder = asyncHandler(async (req, res, next) => {
       metadata: {
         orderId: order._id.toString(),
       },
-      line_items: order.products.map(product=> {
+      line_items: order.products.map((product) => {
         return {
           price_data: {
             currency: "egp",
@@ -157,10 +160,9 @@ export const createOrder = asyncHandler(async (req, res, next) => {
           },
           quantity: product.quantity,
         };
-        
       }),
-      discounts:req.body.couponId ?[{coupon :req.body.couponId}] :[],
-      cancel_url :process.env.CANCEL_URL,
+      discounts: req.body.couponId ? [{ coupon: req.body.couponId }] : [],
+      cancel_url: process.env.CANCEL_URL,
       SUCCESS_URL: process.env.SUCCESS_URL,
     });
     return res
@@ -233,4 +235,32 @@ export const updateOrderStatusByAdmin = asyncHandler(async (req, res, next) => {
     return next(new Error(`Fail to  updated your order `, { cause: 400 }));
   }
   return res.status(200).json({ message: "Done" });
+});
+
+export const webhook = asyncHandler(async (req, res) => {
+  const stripe = new Stripe(process.env.STRIPE_KEY);
+  const sig = req.headers["stripe-signature"];
+
+  let event;
+
+  try {
+    event = stripe.webhooks.constructEvent(
+      req.body,
+      sig,
+      process.env.endpointSecret
+    );
+  } catch (err) {
+    res.status(400).send(`Webhook Error: ${err.message}`);
+    return;
+  }
+
+  // Handle the event
+  const { orderId } = event.data.object.mandate;
+  if (event.type != "checkout.session.completed") {
+    await orderModel.updateOne({ _id: orderId }, { status: "rejected" });
+    return res.status(400).json({ message: "rejected order" });
+  }
+
+  await orderModel.updateOne({ _id: orderId }, { status: "placed" });
+  return res.status(200).json({ message: "done" });
 });
