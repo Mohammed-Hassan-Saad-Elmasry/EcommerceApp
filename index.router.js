@@ -8,22 +8,22 @@ import orderRouter from "./src/modules/order/order.router.js";
 import productRouter from "./src/modules/product/product.router.js";
 import reviewsRouter from "./src/modules/reviews/review.router.js";
 import { handelerror , asyncHandler } from "./src/utils/errorhandling.js";
-// import subcategoryRouter from "./modules/subcategory/subcategory.router.js";
+ import subcategoryRouter from "./modules/subcategory/subcategory.router.js";
 import userRouter from "./src/modules/user/user.router.js";
 import cors from "cors";
-const initApp = (app, express) => {
+const bootstrap = (app, express) => {
   app.use(cors()); // allow access from anyWare
   app.use(express.json());
   app.get("/", (req, res, next) => {
     return res
       .status(200)
-      .json({ message: "Welcome to E-commerce APP C39  online" });
+      .json({ message: "Welcome to E-commerce APP" });
   });
   app.use(`/auth`, authRouter);
   app.use(`/user`, userRouter);
   app.use(`/product`, productRouter);
   app.use(`/category`, categoryRouter);
-  // app.use(`/subCategory`, subcategoryRouter);
+  app.use(`/subCategory`, subcategoryRouter);
   app.use(`/review`, reviewsRouter);
   app.use(`/coupon`, couponRouter);
   app.use(`/cart`, cartRouter);
@@ -36,4 +36,4 @@ const initApp = (app, express) => {
   app.use(handelerror);
   connectDB();
 };
-export default initApp;
+export default bootstrap;

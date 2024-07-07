@@ -149,7 +149,7 @@ export const createOrder = asyncHandler(async (req, res, next) => {
       line_items: order.products.map(product=> {
         return {
           price_data: {
-            currency: "usd",
+            currency: "egp",
             product_data: {
               name: product.name,
             },
