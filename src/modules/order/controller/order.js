@@ -247,26 +247,20 @@ export const webhook = asyncHandler(async (req, res) => {
     event = stripe.webhooks.constructEvent(
       req.body,
       sig,
-      process.env.ENDPOINT_SECRET
+      process.env.endpointSecret
     );
   } catch (err) {
-    console.error(`فشل التحقق من توقيع الويب هوك: ${err.message}`);
-    res.status(400).send(`خطأ في الويب هوك: ${err.message}`);
+    res.status(400).send(`Webhook Error: ${err.message}`);
     return;
   }
 
+  // Handle the event
   const { orderId } = event.data.object.metadata;
-  
-  try {
-    if (event.type !== "checkout.session.completed") {
-      await orderModel.updateOne({ _id: orderId }, { status: "rejected" });
-      return res.status(400).json({ message: "تم رفض الطلب" });
-    }
-
-    await orderModel.updateOne({ _id: orderId }, { status: "placed" });
-    return res.status(200).json({ message: "تم بنجاح" });
-  } catch (err) {
-    console.error(`خطأ أثناء تحديث الطلب: ${err.message}`);
-    return res.status(500).json({ message: "خطأ في الخادم الداخلي" });
+  if (event.type != "checkout.session.completed") {
+    await orderModel.updateOne({ _id: orderId }, { status: "rejected" });
+    return res.status(400).json({ message: "rejected order" });
   }
+
+  await orderModel.updateOne({ _id: orderId }, { status: "placed" });
+  return res.status(200).json({ message: "done" });
 });
