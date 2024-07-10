@@ -16,7 +16,7 @@ router.post(
   "/",
   auth(endPoint.create),
   fileUpload(fileValidation.image).single("image"),
-  // validation(validators.createCategory),
+  validation(validators.createCategory),
   categoryController.createCategory
 );
 
@@ -24,7 +24,7 @@ router.put(
   "/:categoryId",
   auth(endPoint.update),
   fileUpload(fileValidation.image).single("image"),
-  // validation(validators.updateCategory),
+  validation(validators.updateCategory),
   categoryController.updateCategory
 );
 

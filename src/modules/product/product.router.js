@@ -1,10 +1,9 @@
 import { auth } from "../../middleware/auth.js";
-import { fileUpload, fileValidation } from "../../utils/multer.js";
 import * as productcontroller from "./controller/product.js";
 import reviews from "../reviews/review.router.js";
 import { endpoint } from "./product.endPoint.js";
-fileUpload;
 import { Router } from "express";
+import { fileUpload, fileValidation } from "../../utils/multer.js";
 const router = Router();
 router.use("/:productId/review", reviews);
 router.post(

@@ -13,7 +13,7 @@ router.post(
   "/",
   auth(endPoint.create),
   fileUpload(fileValidation.image).single("image"),
-  // validation(validators.createCoupon),
+  validation(validators.createCoupon),
   couponController.createCoupon
 );
 
@@ -21,7 +21,7 @@ router.put(
   "/:couponId",
   auth(endPoint.update),
   fileUpload(fileValidation.image).single("image"),
-  // validation(validators.updateCoupon),
+  validation(validators.updateCoupon),
   couponController.updateCoupon
 );
 

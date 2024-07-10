@@ -12,7 +12,7 @@ router.post(
   "/",
   auth(endPoint.create),
   fileUpload(fileValidation.image).single("image"),
-//   validation(validators.createSubcategory),
+  validation(validators.createSubcategory),
   subcategoryController.createSubcategory
 );
 
@@ -20,7 +20,7 @@ router.put(
   "/:subcategoryId",
   auth(endPoint.update),
   fileUpload(fileValidation.image).single("image"),
-//   validation(validators.updateSubcategory),
+  validation(validators.updateSubcategory),
   subcategoryController.updateSubcategory
 );
 
